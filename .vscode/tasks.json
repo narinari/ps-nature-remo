@@ -1,0 +1,44 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build generation",
+      "type": "shell",
+      "command": "yarn run build:generation",
+      "problemMatcher": {
+        "pattern": [
+          {
+            "regexp": "\\* (ERROR|WARNING):.*",
+            "severity": 1,
+          },
+          {
+            "regexp": "at (.+) line ([0-9]+), column ([0-9]+) - line ([0-9]+), column ([0-9]+)",
+            "file": 0,
+            "line": 1,
+            "column": 2,
+            "endLine": 3,
+            "endColumn": 4,
+          },
+          {
+            "regexp": "\\s+[0-9]+\\s+(.+)",
+            "code": 0
+          },
+          {
+            "regexp": "(.+)",
+            "message": 0
+          }
+        ],
+        "background": {
+          "beginsPattern": "\\* Building project in.*",
+          "endsPattern": "\\* Build successful.*"
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

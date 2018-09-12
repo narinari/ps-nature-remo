@@ -11,7 +11,7 @@
         "pattern": [
           {
             "regexp": "\\* (ERROR|WARNING):.*",
-            "severity": 1,
+            "severity": 1
           },
           {
             "regexp": "at (.+) line ([0-9]+), column ([0-9]+) - line ([0-9]+), column ([0-9]+)",
@@ -19,7 +19,7 @@
             "line": 1,
             "column": 2,
             "endLine": 3,
-            "endColumn": 4,
+            "endColumn": 4
           },
           {
             "regexp": "\\s+[0-9]+\\s+(.+)",
@@ -39,6 +39,11 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "type": "npm",
+      "script": "generation",
+      "problemMatcher": []
     }
   ]
 }

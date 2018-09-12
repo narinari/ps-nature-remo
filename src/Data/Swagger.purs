@@ -110,6 +110,7 @@ _type = prop (SProxy :: SProxy "type") <<< _Newtype
 data Param
   = ParamType
     { "in" :: String
+    , "type" :: NullOrUndefined String
     , description :: NullOrUndefined String
     , name :: String
     , required :: NullOrUndefined Boolean
@@ -126,6 +127,7 @@ instance decodeParam :: Decode Param where
       pure $ ParamRef { "$ref": r }
     decode' = do
       _in <- readProp "in" f >>= decode
+      _type <- readProp "type" f >>= decode
       description <- readProp "description" f >>= decode
       name <- readProp "name" f >>= decode
       required <- readProp "required" f >>= decode
@@ -133,6 +135,7 @@ instance decodeParam :: Decode Param where
       uniqueItems <- readProp "uniqueItems" f >>= decode
       pure $ ParamType
         { "in": _in
+        , "type": _type
         , description: description
         , name: name
         , required: required

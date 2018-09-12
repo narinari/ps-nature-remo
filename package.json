@@ -13,6 +13,8 @@
   "scripts": {
     "clean": "rm -rf output .pulp-cache",
     "build:generation": "pulp --psc-package build --src-path src --main NatureRemo.Generation.Main --build-path output --to output/generate.js",
+    "build:generation:compile": "psc-package build -- --source-maps",
+    "build:generation:bundle": "purs bundle output/*/*.js --main NatureRemo.Generation.Main -o output/generate.js --source-maps",
     "generation": "rm -rf src/NatureRemo/Api && node output/generate.js"
   }
 }

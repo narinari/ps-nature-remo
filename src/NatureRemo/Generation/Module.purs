@@ -11,7 +11,7 @@ import Data.Lens ((^.))
 import Data.Lens as L
 import Data.List.NonEmpty (NonEmptyList)
 import Data.List.NonEmpty as NonEmptyList
-import Data.Maybe (Maybe(..), fromMaybe, maybe)
+import Data.Maybe (Maybe(Just, Nothing), fromMaybe, fromMaybe')
 import Data.Record as Record
 import Data.StrMap (StrMap)
 import Data.StrMap as StrMap
@@ -127,6 +127,12 @@ parseParam (ParamType pr@{ description: NullOrUndefined description
   Just { description
        , name
        , innerType: parseType schema }
+parseParam (ParamType pr@{ description: NullOrUndefined description
+           , name
+           , "type": NullOrUndefined (Just string)}) =
+  Just { description
+       , name
+       , innerType: parseStringType string }
 
 parseParam (ParamType { name: "body"
            , "in": "body" }) = Nothing
@@ -152,10 +158,19 @@ bodyParamAsDecl
     Just (parseType schema)
 bodyParamAsDecl _ = Nothing
 
+parseStringType :: Partial => String -> AST.TypeDecl
+parseStringType = case _ of
+  "string" -> AST.TypeString
+  "number" -> AST.TypeNumber
+  "integer" -> AST.TypeInt
+  "boolean" -> AST.TypeBoolean
+  "array" -> AST.TypeArray AST.TypeString
+  -- "file" ->
+
 parseType :: Partial => Schema -> AST.TypeDecl
-parseType sc = fromMaybe
-  (unsafeCrashWith $ "Cannot parse param type '" <> show (writeJSON sc) <> "'")
-  $ parseType' (L.view JSchema._type sc)
+parseType sc = fromMaybe'
+  (\_ -> unsafeCrashWith $ "Cannot parse type '" <> show (writeJSON sc) <> "'")
+  $ (parseType' $ L.view JSchema._type sc)
   <|> AST.TypeRef <$> (L.view JSchema._ref sc) where
   parseType' (Just (TypeValidatorString st)) = case st of
     SchemaString -> Just AST.TypeString
